@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Statistics Office — invented fixture, not a real feed</title>
+    <link>https://example.org/statistics</link>
+    <item>
+      <title>Quarterly price index released</title>
+      <link>https://example.org/statistics/releases/1</link>
+      <guid>https://example.org/statistics/releases/1</guid>
+      <pubDate>Mon, 01 Dec 2026 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

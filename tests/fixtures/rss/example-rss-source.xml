@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Job Board — invented fixture, not a real feed</title>
+    <link>https://example.invalid/feed</link>
+    <item>
+      <title>Assistant Professor, Example Department</title>
+      <link>https://example.invalid/jobs/201</link>
+      <guid>https://example.invalid/jobs/201</guid>
+      <pubDate>Mon, 01 Dec 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Visiting Scholar, Invented University</title>
+      <link>https://example.invalid/jobs/202</link>
+      <guid>https://example.invalid/jobs/202</guid>
+      <pubDate>Tue, 02 Dec 2026 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,42 @@
+watches:
+  - id: example-watch
+    pattern: stream
+    description: >
+      Invented example watch used only in tests. Not a real use case.
+    sources: [example-html-source, example-rss-source]
+    hard_filters:
+      deadline_after: today
+    alert_threshold: 70
+    calendar: private
+
+sources:
+  - id: example-html-source
+    adapter: html
+    url: https://example.invalid/jobs
+    schedule: daily
+    extract:
+      item: "div.job"
+      fields: {title: "h3", url: "a@href", deadline: ".deadline"}
+    required_fields: [title, url]
+    health: {stale_after_days: 30, alert_on_zero_results: true}
+    fixture: tests/fixtures/html/example-html-source.html
+    terms_checked: 2026-10-27
+
+  - id: example-rss-source
+    adapter: rss
+    url: https://example.invalid/feed.xml
+    schedule: daily
+    required_fields: [title, url]
+    fixture: tests/fixtures/rss/example-rss-source.xml
+    terms_checked: 2026-10-27
+
+  - id: example-api-source
+    adapter: api
+    url: https://example.invalid/api/jobs
+    schedule: daily
+    items_path: data.items
+    extract:
+      fields: {title: title, url: url, deadline: deadline}
+    required_fields: [title, url]
+    fixture: tests/fixtures/api/example-api-source.json
+    terms_checked: 2026-10-27

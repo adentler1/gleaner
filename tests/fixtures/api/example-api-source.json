@@ -1,0 +1,9 @@
+{
+  "meta": {"note": "invented fixture, not a real API response"},
+  "data": {
+    "items": [
+      {"id": "301", "title": "Chair in Example Studies", "url": "https://example.invalid/jobs/301", "deadline": "2026-12-20"},
+      {"id": "302", "title": "Junior Researcher, Invented Centre", "url": "https://example.invalid/jobs/302", "deadline": "2026-11-30"}
+    ]
+  }
+}

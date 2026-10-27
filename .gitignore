@@ -1,0 +1,31 @@
+# Private config, data, credentials — never in the public repo
+.env
+*.env
+/gleaner-private/
+*.db
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# This spec names real use cases and is explicitly private (see its own header)
+SPEC.md
+PARKED.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# OS/editor
+.DS_Store
+*.swp
