@@ -18,7 +18,9 @@ def test_html_adapter_parses_fixture():
 
     assert len(items) == 3
     assert items[0].fields["title"] == "Lecturer in Invented Economics"
-    assert items[0].fields["url"] == "/jobs/101"
+    # relative href resolved against the source's own url
+    assert items[0].fields["url"] == "https://example.invalid/jobs/101"
+    assert items[1].fields["url"] == "https://example.invalid/jobs/102"  # already absolute, untouched
     assert items[0].fields["deadline"] == "2026-12-01"
     # third item has no deadline span — must be None, not crash
     assert items[2].fields["deadline"] is None
@@ -51,19 +53,9 @@ def test_all_configured_sources_pass_their_fixture():
     every source with a fixture must extract at least one item with every
     required_field populated. A broken selector/path must fail this test,
     not reach deployment."""
-    from gleaner.adapters import get_adapter
+    from gleaner.pipeline.fixtures import check_sources
 
     config = load_config(CONFIG_DIR)
     repo_root = Path(__file__).parent.parent
-
-    for source in config.sources:
-        if not source.fixture:
-            continue
-        adapter = get_adapter(source.adapter)
-        content = (repo_root / source.fixture).read_text()
-        items = adapter.parse(content, source)
-
-        assert items, f"{source.id}: fixture produced zero items"
-        for item in items:
-            missing = [f for f in source.required_fields if not item.fields.get(f)]
-            assert not missing, f"{source.id}: item missing required fields {missing}: {item.fields}"
+    failures = check_sources(config, base_dir=repo_root)
+    assert not failures, "\n".join(failures)

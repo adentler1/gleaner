@@ -6,14 +6,19 @@ attribute instead of text content (e.g. "a@href" for a link's target).
 """
 from __future__ import annotations
 
+import re
+from urllib.parse import urljoin
+
 from bs4 import BeautifulSoup
 
 from gleaner.adapters import http
 from gleaner.adapters.base import FetchResult, RawItem
 from gleaner.config import Source
 
+_URL_ATTRS = {"href", "src"}
 
-def _extract_field(item_tag, selector_spec: str) -> str | None:
+
+def _extract_field(item_tag, selector_spec: str, base_url: str) -> str | None:
     if "@" in selector_spec:
         selector, attr = selector_spec.rsplit("@", 1)
     else:
@@ -24,8 +29,21 @@ def _extract_field(item_tag, selector_spec: str) -> str | None:
         return None
     if attr:
         value = target.get(attr)
-        return value.strip() if isinstance(value, str) else value
-    text = target.get_text(strip=True)
+        if not isinstance(value, str):
+            return value
+        value = value.strip()
+        # A source's listing page commonly uses root-relative links
+        # ("/jobs/42"); resolve them against the source URL so canonical_url
+        # normalization downstream always sees a full URL.
+        if attr in _URL_ATTRS:
+            value = urljoin(base_url, value)
+        return value
+    # Separator matters: a multi-line title split across <h3>/<h4> would
+    # otherwise glue into one run-on word with no space between them. A
+    # single text node can still carry source-HTML newlines/indentation
+    # ("Apply by:\n    13.11.2026") — collapse those too, since SPEC.md
+    # wants the raw string stored as a clean sentence, not page layout noise.
+    text = re.sub(r"\s+", " ", target.get_text(" ", strip=True)).strip()
     return text or None
 
 
@@ -37,7 +55,7 @@ def parse(content: str, source: Source) -> list[RawItem]:
     raw_items: list[RawItem] = []
     for item_tag in soup.select(source.extract.item):
         fields = {
-            name: _extract_field(item_tag, selector)
+            name: _extract_field(item_tag, selector, source.url)
             for name, selector in source.extract.fields.items()
         }
         raw_items.append(RawItem(source_item_id=None, fields=fields))
